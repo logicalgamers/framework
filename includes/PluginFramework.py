@@ -3,6 +3,7 @@ import os
 import imp
 import inspect
 import PluginAPI
+import sys
 
 class PluginFramework():
 	def __init__(self, Plugin_Directory="./Plugins/", Plugin_Extension="*.plugin.py"):
@@ -11,15 +12,18 @@ class PluginFramework():
 		self.Plugin_Directory = Plugin_Directory
 		self.Plugin_Extension = str(Plugin_Extension)
 
+		for root, dirs, files in os.walk(self.Plugin_Directory):  ## Append all the import directory's so that plugins can import.
+			sys.path.append(root)
+
 		self.Plugins = []
 		self._load_plugins()
 
 	def _load_plugins(self):	 
 		for root, dirs, files in os.walk(self.Plugin_Directory):  
-		    for filename in fnmatch.filter(files, self.Plugin_Extension):
-		    	Plugin_File_Location = os.path.join(root, filename)
-		    	name = filename.split('.')[0]
-		    	self.Plugins.append(self._load_new_plugin(name, Plugin_File_Location))   
+			for filename in fnmatch.filter(files, self.Plugin_Extension):
+				Plugin_File_Location = os.path.join(root, filename)
+				name = filename.split('.')[0]
+				self.Plugins.append(self._load_new_plugin(name, Plugin_File_Location))   
 
 		for Plugin in self.Plugins: ## Give out the API instance to each plugin.
 			if('__accept_API__' in dir(Plugin)):
