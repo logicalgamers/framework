@@ -8,4 +8,3 @@ class HelloWorld(object):
 	def run(self):
 		print self.API.get_plugins(True)
 		print self.API.plugin_exists("Pizza!")
-		

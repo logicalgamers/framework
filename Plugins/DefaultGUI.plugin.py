@@ -18,7 +18,6 @@ class Plugin_ListWidget(QtGui.QListWidget):
             if(str(QListWidgetItem.text()) in str(Plugin.__dict__['plugin_name'])):
                 Plugin.run()
 
-
 class GUI(QtGui.QWidget):
     
     def __init__(self, API, title="Main"):
@@ -45,5 +44,3 @@ class GUI(QtGui.QWidget):
                     self.Plugins_ListWidget.addItem(Plugin.__dict__['plugin_name'])
 
         self.show()
-
-
