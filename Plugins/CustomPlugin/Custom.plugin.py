@@ -1,4 +1,5 @@
 import string
+from HTTP import HTTP as HTTPWrapper
 
 class Custom():
 	def run(self):

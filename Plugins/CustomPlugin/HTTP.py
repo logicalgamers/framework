@@ -1,7 +1,8 @@
 import urllib
 import urllib2
 import cookielib
-class HTTPWrapper():
+
+class HTTP():
 	def __init__(self):
 		self.cookiejar = cookielib.CookieJar()
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookiejar))
