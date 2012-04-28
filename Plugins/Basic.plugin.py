@@ -1,21 +1,18 @@
 from PyQt4 import QtGui
 import sys
+from Gaia import Gaia
 
 class Basic():
-	def __init__(self, *args):
-		pass
+	def __init__(self):
+		self.Gaia = Gaia()
 
 	def __accept_API__(self, API):
 		self.API = API
-		print "Accepted the API"
 
 	def run(self):
-		print "Basic Application starting up.."
+		print "Basic Gaia Application starting up.."
 		self.gui = QtGui.QWidget()
 		self.gui.setGeometry(400, 300, 400, 300)
-		self.gui.setWindowTitle("Basic GUI Plugin")    
-
-		self.API.run_plugin("HelloWorld")
+		self.gui.setWindowTitle("Basic Gaia+GUI Plugin") 
 
 		self.gui.show()
-		print "GUI SHOWN."
