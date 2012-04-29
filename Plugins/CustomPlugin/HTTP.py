@@ -11,6 +11,8 @@ class HTTP():
 		return self._req(url)
 
 	def Post(self, url, data):
+		if(type(data) == dict):
+			data = urllib.urlencode(data)
 		return self._req(url, data)
 
 	def _req(self, url, data=None):
@@ -18,3 +20,6 @@ class HTTP():
 			if(not isinstance(data, str)):
 				data = ""
 		return self.opener.open(url, data).read()
+
+	def setHeader(self, name, value):
+		self.opener.addheaders = [(name, value)]
