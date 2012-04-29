@@ -22,12 +22,16 @@ class Gaia():
 				return False
 			else:
 				Username = self.Username
+		else:
+			self.Username = Username
 
 		if(Password == None):
 			if(self.Password == None):
 				return False
 			else:
 				Password = self.Password
+		else:
+			self.Password = Password
 
 		print 'Attempting Gaia login..'
 		params = dict()
@@ -60,17 +64,17 @@ class Gaia():
 		else:
 			self.LoggedIn = False
 			return False
-			
+
+	def getGold(self):
+		if(self.LoggedIn == False):
+			return '0'
+		Req = self.HTTP.Get(GaiaConstants.URL_HOME)
+		return self.General.getBetween(Req, '<span id="go1d_amt">', '</span>')
+
 	def getUsername(self):
 		return self.Username
 
 
 class GaiaConstants():
+	URL_HOME = "http://www.gaiaonline.com/"
 	URL_LOGIN_DEFAULT = "http://www.gaiaonline.com/auth/login/"
-	DATA_LOGIN_DEFAULT = {	"username": "", 
-							"password": "", 
-							"signInButton": "Log+In", 
-							"sid": "", 
-							"token": "", 
-							"redirect": "http%3A%2F%2Fwww.gaiaonline.com%2F", 
-							"chap": ""}

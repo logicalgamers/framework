@@ -19,6 +19,7 @@ class Basic():
 		if(self.Gaia.LoggedIn == False):
 			self.API.run_plugin("GaiaLogin")
 		else:
-			self.GoldLabel = QtGui.QLabel(str(self.Gaia.getUsername()) + "'s Gold: ")
+			Gold = self.Gaia.getGold()
+			self.GoldLabel = QtGui.QLabel(str(self.Gaia.getUsername()) + "'s Gold: " + Gold)
 			self.Layout_Horiz_1.addWidget(self.GoldLabel)
 			self.gui.show()
