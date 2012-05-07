@@ -29,9 +29,12 @@ class PluginAPI():
 			return Plugins_names
 
 	def get_plugin(self, plugin_name):
-		for Plugin in self.get_plugins():
-			if(Plugin.__dict__['plugin_name'] == plugin_name):
-				return Plugin
+		try:
+			for Plugin in self.get_plugins():
+				if(Plugin.__dict__['plugin_name'] == plugin_name):
+					return Plugin
+		except Exception, ex:
+			return ex
 
 	def run_plugin(self, plugin_name):
 		self.get_plugin(plugin_name).run()

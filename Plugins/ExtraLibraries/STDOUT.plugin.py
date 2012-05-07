@@ -2,7 +2,7 @@ import sys
 import time
 import inspect
 
-class stdout_Unbuffered():
+class STDOUT():
     def __init__(self, stream):
         self.stream = stream
 
@@ -37,4 +37,4 @@ class stdout_Unbuffered():
 
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
-sys.stdout=stdout_Unbuffered(sys.stdout)
+sys.stdout=STDOUT(sys.stdout)

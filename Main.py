@@ -1,5 +1,5 @@
 from PyQt4 import QtGui
-from includes import PluginFramework, PluginAPI, STDOUT
+from includes import PluginFramework
 import sys
 
 class Main:
