@@ -1,12 +1,13 @@
+import sys
+
 from PyQt4 import QtGui
 from includes import PluginFramework
-import sys
 
 class Main:
 	def __init__(self):
 		self.app = QtGui.QApplication(sys.argv)
 		self.Plugins = PluginFramework.PluginFramework()
-	    
+	
 	def run(self):
 		self.app.exec_()
 
