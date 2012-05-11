@@ -1,6 +1,8 @@
 from PyQt4 import QtGui, QtCore
 
 class Default_GUI():
+
+
     def __init__(self):
         pass
 
@@ -8,7 +10,10 @@ class Default_GUI():
         self.GUI = GUI(API)
         
 class Plugin_ListWidget(QtGui.QListWidget):
+
+
     def __init__(self, API, parent=None):
+
         super(Plugin_ListWidget, self).__init__(parent)
         self.itemDoubleClicked.connect(self.plugin_double_clicked)
         self.Plugins_API = API
@@ -20,7 +25,9 @@ class Plugin_ListWidget(QtGui.QListWidget):
 
 class GUI(QtGui.QWidget):
     
+
     def __init__(self, API, title="Main"):
+
         super(GUI, self).__init__()
         
         self.API = API
@@ -29,18 +36,16 @@ class GUI(QtGui.QWidget):
         self.init_UI()
 
     def init_UI(self):
-        
         self.setGeometry(500, 340, 500, 340)
         self.setWindowTitle(self.Title)    
 
         self.Layout = QtGui.QBoxLayout(2, self)
-        self.Plugins_ListWidget = Plugin_ListWidget(API=self.API)   ## Create the custom QListWidget
-        self.Layout.addWidget(self.Plugins_ListWidget)              ## Add the Plugins_ListWidget to the Layout.
+        self.Plugins_ListWidget = Plugin_ListWidget(API=self.API) # Create the custom QListWidget
+        self.Layout.addWidget(self.Plugins_ListWidget) # Add the Plugins_ListWidget to the Layout.
 
-        print self.API.plugin_exists("Custom")
         for Plugin in self.API.get_plugins():
-            if(Plugin != None):                                                 ## Just to make sure that the plugin was loaded 
-                if('plugin_name' in Plugin.__dict__ and 'run' in dir(Plugin)):  ## correctly and all that before we add it to the ListWidget.
+            if(Plugin is not None): # Just to make sure that the plugin was loaded 
+                if('plugin_name' in Plugin.__dict__ and 'run' in dir(Plugin)): # correctly and all that before we add it to the ListWidget.
                     self.Plugins_ListWidget.addItem(Plugin.__dict__['plugin_name'])
 
         self.show()
