@@ -10,7 +10,7 @@ class Default_GUI():
 class Plugin_ListWidget(QtGui.QListWidget):
     def __init__(self, API, parent=None):
         super(Plugin_ListWidget, self).__init__(parent)
-        self.itemDoubleClicked.connect(self.pluginDoubleClicked)
+        self.itemDoubleClicked.connect(self.plugin_double_clicked)
         self.Plugins_API = API
 
     def plugin_double_clicked(self, QListWidgetItem):
@@ -26,7 +26,7 @@ class GUI(QtGui.QWidget):
         self.API = API
         self.Title = title
 
-        self.initUI()
+        self.init_UI()
 
     def init_UI(self):
         

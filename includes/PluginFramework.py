@@ -27,8 +27,8 @@ class PluginFramework():
                 self.Plugins.append(self._load_new_plugin(name, Plugin_File_Location))   
 
         for Plugin in self.Plugins: ## Give out the API instance to each plugin.
-            if('__accept_API__' in dir(Plugin)):
-                Plugin.__accept_API__(self.Plugin_API)
+            if('_accept_API' in dir(Plugin)):
+                Plugin._accept_API(self.Plugin_API)
 
     def _load_new_plugin(self, name, plugin_location):
         Plugin = imp.load_source(name, plugin_location)
