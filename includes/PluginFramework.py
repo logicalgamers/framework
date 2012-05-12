@@ -3,12 +3,33 @@ import fnmatch
 import os
 import imp
 import inspect
+import threading
+import time
 
 import PluginAPI
 
+class PluginThread(threading.Thread):
+    """docstring for PluginThread"""
+
+
+    def __init__(self, step):
+        threading.Thread.__init__(self)
+        self.stopThread = threading.Event()
+        self.step = step
+        self.total = 0
+        self.count = 0
+
+    def run(self):
+        while not self.stopThread.isSet():
+            self.total += self.step
+            self.count += 1
+
+    def stop(self):
+        self.stopThread.set()
+
 class PluginFramework():
 
-    
+
     def __init__(self, Plugin_Directory="./Plugins/", Plugin_Extension="*.plugin.py"):
 
         self.Plugin_API = PluginAPI.PluginAPI(self)
