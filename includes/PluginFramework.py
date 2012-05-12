@@ -7,6 +7,8 @@ import inspect
 import PluginAPI
 
 class PluginFramework():
+
+    
     def __init__(self, Plugin_Directory="./Plugins/", Plugin_Extension="*.plugin.py"):
 
         self.Plugin_API = PluginAPI.PluginAPI(self)
