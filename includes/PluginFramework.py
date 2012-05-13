@@ -12,20 +12,20 @@ class PluginThread(threading.Thread):
     """docstring for PluginThread"""
 
 
-    def __init__(self, step):
-        threading.Thread.__init__(self)
-        self.stopThread = threading.Event()
-        self.step = step
-        self.total = 0
-        self.count = 0
+    def __init__(self, target=None):
+        threading.Thread.__init__(self, target=target)
+        self.stop_event = threading.Event()
+        self.__target = target
 
     def run(self):
-        while not self.stopThread.isSet():
-            self.total += self.step
-            self.count += 1
+        while not self.stop_event.isSet():
+            self.__target()
 
     def stop(self):
-        self.stopThread.set()
+        self.stop_event.set()
+
+    def get_plugin_instance(self):
+        return self.__target
 
 class PluginFramework():
 
@@ -49,9 +49,11 @@ class PluginFramework():
                 name = filename.split('.')[0]
                 self.Plugins.append(self._load_new_plugin(name, Plugin_File_Location))   
 
-        for Plugin in self.Plugins: ## Give out the API instance to each plugin.
-            if('_accept_API' in dir(Plugin)):
-                Plugin._accept_API(self.Plugin_API)
+        for Plugin in self.Plugins: ## Give out the API instance to each plugin and start up each thread.
+            #print dir(Plugin.get_plugin_instance())
+            if('_accept_API' in dir(Plugin.get_plugin_instance())):
+                Plugin.get_plugin_instance()._accept_API(self.Plugin_API)
+            Plugin.start()
 
     def _load_new_plugin(self, name, plugin_location):
         Plugin = imp.load_source(name, plugin_location)
@@ -68,7 +70,8 @@ class PluginFramework():
             setattr(Plugin_class, "plugin_name", plugin_name)
             setattr(Plugin_class, "plugin_classname", plugin_classname)
 
-            return Plugin_class
+            Plugin_thread = PluginThread(target=Plugin_class)
+            return Plugin_thread
         except Exception, ex:
             #if(str(ex) == "'Plugin'"):
             #    print "ERROR: Class could not be located in plugin '" + str(Plugin.__name__) + "'"

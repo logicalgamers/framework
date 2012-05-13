@@ -8,6 +8,10 @@ class Default_GUI():
 
     def _accept_API(self, API):
         self.GUI = GUI(API)
+
+    def __call__(self):
+        while(True):
+            print "Default_GUI"
         
 class Plugin_ListWidget(QtGui.QListWidget):
 
@@ -33,6 +37,7 @@ class GUI(QtGui.QWidget):
         self.API = API
         self.Title = title
 
+    def run(self):
         self.init_UI()
 
     def init_UI(self):

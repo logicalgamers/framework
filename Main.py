@@ -7,6 +7,8 @@ class Main:
     def __init__(self):
         self.app = QtGui.QApplication(sys.argv)
         self.plugins = PluginFramework.PluginFramework()
+        while(True):
+            pass
     
     def run(self):
         self.app.exec_()
