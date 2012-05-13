@@ -1,2 +1,2 @@
-
-1) Think of a way to allow plugins to hang in place while waiting for another plugin to execute.
+1) Get rid of PyQT and replace with something like wxPython
+2) Read over and implement completely the codin standards listed here : http://www.python.org/dev/peps/pep-0008/
