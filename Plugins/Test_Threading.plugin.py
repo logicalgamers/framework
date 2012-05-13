@@ -5,7 +5,8 @@ class Test_Threading():
 
     def run(self):
         while(True):
-            print "Test_Threading"
+            pass
+            #print "Test_Threading"
 
     def __call__(self):
         print "Test_Threading __call__"

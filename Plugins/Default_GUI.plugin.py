@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from Tkinter import *
 
 class Default_GUI():
 
@@ -7,50 +7,32 @@ class Default_GUI():
         pass
 
     def _accept_API(self, API):
-        self.GUI = GUI(API)
+        self.API = API
 
     def __call__(self):
-        while(True):
-            print "Default_GUI"
-        
-class Plugin_ListWidget(QtGui.QListWidget):
+        root = Tk()
+        self.GUI = GUI(self.API, master=root)
+        self.GUI.mainloop()
 
-
-    def __init__(self, API, parent=None):
-
-        super(Plugin_ListWidget, self).__init__(parent)
-        self.itemDoubleClicked.connect(self.plugin_double_clicked)
-        self.Plugins_API = API
-
-    def plugin_double_clicked(self, QListWidgetItem):
-        for Plugin in self.Plugins_API.get_plugins():
-            if(str(QListWidgetItem.text()) in str(Plugin.__dict__['plugin_name'])):
-                Plugin.run()
-
-class GUI(QtGui.QWidget):
+class GUI(Frame):
     
 
-    def __init__(self, API, title="Main"):
+    def __init__(self, API, title="Main", master=None):
 
-        super(GUI, self).__init__()
+        Frame.__init__(self, master)
         
         self.API = API
         self.Title = title
 
-    def run(self):
-        self.init_UI()
+        self.grid()
+        self.createWidgets()
 
-    def init_UI(self):
-        self.setGeometry(500, 340, 500, 340)
-        self.setWindowTitle(self.Title)    
+        self.master.title(self.Title)
 
-        self.Layout = QtGui.QBoxLayout(2, self)
-        self.Plugins_ListWidget = Plugin_ListWidget(API=self.API) # Create the custom QListWidget
-        self.Layout.addWidget(self.Plugins_ListWidget) # Add the Plugins_ListWidget to the Layout.
+    def createWidgets(self):
+        self.quitButton = Button(self, text="Quit", command=self.quit_)
+        self.quitButton.grid()
 
-        for Plugin in self.API.get_plugins():
-            if(Plugin is not None): # Just to make sure that the plugin was loaded 
-                if('plugin_name' in Plugin.__dict__ and 'run' in dir(Plugin)): # correctly and all that before we add it to the ListWidget.
-                    self.Plugins_ListWidget.addItem(Plugin.__dict__['plugin_name'])
-
-        self.show()
+    def quit_(self):
+        self.destroy()
+        quit()
