@@ -1,8 +1,8 @@
-import sys
 import fnmatch
-import os
 import imp
 import inspect
+import os
+import sys
 import threading
 import time
 
