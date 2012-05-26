@@ -17,17 +17,21 @@ class PluginAPI():
             Plugins = self.PluginFramework.get_plugins()
             Plugins_names = []
             for Plugin in Plugins:
-                Plugins_names.append(Plugin.__dict__['plugin_name'])
+                Plugins_names.append(self.get_plugin_name(Plugin))
             return Plugins_names
         return self.PluginFramework.get_plugins()
 
     def get_plugin(self, plugin_name):
         try:
             for Plugin in self.get_plugins():
-                if(Plugin.__dict__['plugin_name'] == plugin_name):
+                if(self.get_plugin_name(Plugin) == plugin_name):
                     return Plugin
         except Exception, ex:
             return ex
+
+    def get_plugin_name(self, plugin_object):
+        print plugin_object.get_plugin_instance().__dict__['plugin_name']
+        return plugin_object.get_plugin_instance().__dict__['plugin_name']
 
     def run_plugin(self, plugin_name):
         self.get_plugin(plugin_name).run()
