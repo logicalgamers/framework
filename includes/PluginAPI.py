@@ -43,12 +43,10 @@ class PluginAPI():
         return False
 
     def create_new_instance(self, plugin_name):
-        for Plugin in self.get_plugins():
-            plugin_def_instance = self.get_plugins()[Plugin][0].get_plugin_instance()
+        plugin_def_instance = self.get_plugins()[plugin_name][0].get_plugin_instance()
 
-            name = plugin_def_instance.__dict__['plugin_name']
-            location = plugin_def_instance.__dict__['plugin_location']
+        location = plugin_def_instance.__dict__['plugin_location']
 
-            new_instance = self.PluginFramework._load_new_plugin(name, location)
-            self.PluginFramework.Plugins[Plugin].append(new_instance)
-            return new_instance
+        new_instance = self.PluginFramework._load_new_plugin(plugin_name, location)
+        self.PluginFramework.Plugins[plugin_name].append(new_instance)
+        return new_instance
