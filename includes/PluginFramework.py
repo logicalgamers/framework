@@ -39,7 +39,7 @@ class PluginFramework():
         for root, dirs, files in os.walk(self.Plugin_Directory):  ## Append all the import directory's so that plugins can import.
             sys.path.append(root)
 
-        self.Plugins = []
+        self.Plugins = {}
         self._load_plugins()
 
     def _load_plugins(self):     
@@ -47,15 +47,16 @@ class PluginFramework():
             for filename in fnmatch.filter(files, self.Plugin_Extension):
                 Plugin_File_Location = os.path.join(root, filename)
                 name = filename.split('.')[0]
-                self.Plugins.append(self._load_new_plugin(name, Plugin_File_Location))   
+                plugin_def_thread = self._load_new_plugin(name, Plugin_File_Location)
+                self.Plugins[plugin_def_thread.get_plugin_instance().__dict__['plugin_name']] = [plugin_def_thread]
 
-        for Plugin in self.Plugins: ## Give out the API instance to each plugin and start up each thread.
-            #print dir(Plugin.get_plugin_instance())
+        for Plugin_name in self.Plugins: ## Give out the API instance to each plugin and start up each thread.
+            Plugin = self.Plugins[Plugin_name][0]
             if('_accept_API' in dir(Plugin.get_plugin_instance())):
                 Plugin.get_plugin_instance()._accept_API(self.Plugin_API)
             Plugin.start()
 
-    def _load_new_plugin(self, name, plugin_location):
+    def _load_new_plugin(self, name, plugin_location, cust_plugin_name=None):
         Plugin = imp.load_source(name, plugin_location)
         try:
             plugin_name = name
@@ -67,8 +68,12 @@ class PluginFramework():
                 plugin_classname = 'Plugin'
 
             setattr(Plugin_class, "plugin_location", plugin_location)
-            setattr(Plugin_class, "plugin_name", plugin_name)
             setattr(Plugin_class, "plugin_classname", plugin_classname)
+
+            if(cust_plugin_name == None):
+                setattr(Plugin_class, "plugin_name", plugin_name)
+            else:
+                setattr(Plugin_class, "plugin_name", cust_plugin_name)
 
             Plugin_thread = PluginThread(target=Plugin_class)
             return Plugin_thread
@@ -91,3 +96,6 @@ class PluginFramework():
 
     def get_plugins(self):
         return self.Plugins
+
+    def create_new_instance(self, plugin_name):
+        pass

@@ -1,4 +1,6 @@
 from Tkinter import *
+from threading import *
+
 from Pmw import *
 import Pmw
 
@@ -22,27 +24,40 @@ class Default_GUI():
 class Plugin_Row:
 
 
-    def __init__(self, parent, plugin_object):
+    def __init__(self, parent, plugin_def_thread, API):
 
         self.parent = parent
-        self.plugin_object = plugin_object
+        self.API = API
 
-        self.frame = Frame(parent, relief=SOLID, bd=1)
-        self.frame.pack(side=TOP,expand=True, fill=BOTH,pady=10,anchor="c")
-        
-        pluginFrame = Frame(self.frame, relief=SUNKEN, bd=1)
-        pluginFrame.pack(side=BOTTOM, anchor="e", fill=X, expand=True)
+        self.plugin_threads = []
 
-        groupFrame = Frame(pluginFrame,relief=GROOVE, bd=1)
-        label = Label(groupFrame, text=plugin_object.get_plugin_instance().__dict__['plugin_name'], justify=LEFT, anchor="w",bg = "#5050b0")
-        label.pack(side=LEFT)
-        groupFrame.pack(side=BOTTOM, fill=X, expand=True)
-                
-                        
-        #pluginRowFrame = Frame(groupFrame, relief=SUNKEN, bd=1)
-                        
-        #pluginRowFrame.pack(side=BOTTOM, fill=X, expand=True)
+        #print dir(self.API.get_plugins()[plugin_def_thread][0])
+        self.plugin_def_thread = self.API.get_plugins()[plugin_def_thread][0]
+        self.plugin_instance = self.plugin_def_thread.get_plugin_instance()
 
+        self.plugin_threads.append(self.plugin_def_thread)
+
+        if('run' in dir(self.plugin_instance)):
+            self.frame = Frame(parent, relief=SOLID, bd=1)
+            self.frame.pack(side=TOP,expand=True, fill=BOTH,pady=10,anchor="c")
+            
+            pluginFrame = Frame(self.frame, relief=SUNKEN, bd=1)
+            pluginFrame.pack(side=BOTTOM, anchor="e", fill=X, expand=True)
+
+            groupFrame = Frame(pluginFrame,relief=GROOVE, bd=1)
+
+            label = Label(groupFrame, text=self.plugin_instance.__dict__['plugin_name'], justify=LEFT, anchor="w",bg = "#5050b0")
+            label.pack(side=LEFT)
+                    
+            self.run = Button(groupFrame, text="Run", command=self.run_new_instance)
+            self.run.pack(side=RIGHT)    
+
+            groupFrame.pack(side=BOTTOM, fill=X, expand=True)
+
+    def run_new_instance(self):
+        new_instance = self.API.create_new_instance(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name'])
+        print dir(new_instance)
+        print "New Instance of " + str(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name']) + " created.."
 
 class GUI(Frame):
     
@@ -66,4 +81,4 @@ class GUI(Frame):
         self.pluginFrame = self.sf.interior()
 
         for plugin in self.API.get_plugins():
-            Plugin_Row(self.pluginFrame, plugin)#fileMenu.add_cascade(label=self.API.get_plugin_name(plugin))
+            Plugin_Row(self.pluginFrame, plugin, self.API)#fileMenu.add_cascade(label=self.API.get_plugin_name(plugin))
