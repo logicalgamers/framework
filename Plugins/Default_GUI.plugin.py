@@ -49,17 +49,25 @@ class Plugin_Row:
 
         groupFrame = Frame(pluginFrame,relief=GROOVE, bd=1)
 
-        label = Label(groupFrame, text=self.plugin_instance.__dict__['plugin_name'], justify=LEFT, anchor="w",bg = "#5050b0")
+        label = Label(groupFrame, text=self.plugin_instance.__dict__['plugin_name'], justify=LEFT, anchor="w", bg = "#5050b0")
         label.pack(side=LEFT)
-                
-        self.run = Button(groupFrame, text="Run", command=self.run_new_instance)
+        
+
+        self.drop_down = Pmw.OptionMenu(groupFrame)
+        self.drop_down.pack(side=BOTTOM)
+
+        self.run = Button(groupFrame, text="Run", command=self.run_new_instance, justify=RIGHT, anchor="e")
         self.run.pack(side=RIGHT)    
 
         groupFrame.pack(side=BOTTOM, fill=X, expand=True)
 
     def run_new_instance(self):
         new_instance = self.API.create_new_instance(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name'])
+        new_instance.start()
         print "New Instance of " + str(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name']) + " created.."
+
+        print dir(self.drop_down.__dict__)
+        self.drop_down.items = self.get_all_instances() #new_instance))
 
     def get_all_instances(self):
         return self.API.get_plugins()[self.plugin_name]
@@ -93,7 +101,7 @@ class GUI(Frame):
         for plugin_name in self.API.get_plugins():
             try:
                 plugin = self.API.get_plugins()[plugin_name][0]
-                
+
                 if('run' in dir(plugin.get_plugin_instance())):
                     self.Rows.append(Plugin_Row(self.pluginFrame, plugin_name, self.API))
             except Exception, ex:
