@@ -4,6 +4,8 @@ from threading import *
 from Pmw import *
 import Pmw
 
+TITLE = "LG Framework - www.logicalgamers.com"
+
 class Default_GUI():
 
 
@@ -15,7 +17,7 @@ class Default_GUI():
 
     def __call__(self):
         root = Tk()
-        root.title("LG Framework - www.logicalgamers.com")
+        root.title(TITLE)
 
         app = GUI(master=root, API=self.API)
 
@@ -81,6 +83,8 @@ class GUI(Frame):
         Frame.__init__(self, master)
         self.API = API
 
+        master.protocol('WM_DELETE_WINDOW', delete_window)
+
         menubar = Frame(master)
         menubar.pack(side=TOP, fill=X)
 
@@ -108,5 +112,6 @@ class GUI(Frame):
                 print ex
 
     def list_instances(self):
+
         for Row in self.Rows:
             print Row.plugin_name + " : " + str(Row.get_all_instances())
