@@ -18,8 +18,7 @@ class PluginThread(threading.Thread):
         self.__target = target
 
     def run(self):
-        while not self.stop_event.isSet():
-            self.__target()
+        self.__target()
 
     def stop(self):
         self.stop_event.set()
@@ -38,6 +37,7 @@ class PluginFramework():
 
         for root, dirs, files in os.walk(self.Plugin_Directory):  ## Append all the import directory's so that plugins can import.
             sys.path.append(root)
+            time.sleep(0.001)
 
         self.Plugins = {}
         self._load_plugins()
@@ -49,12 +49,15 @@ class PluginFramework():
                 name = filename.split('.')[0]
                 plugin_def_thread = self._load_new_plugin(name, Plugin_File_Location)
                 self.Plugins[plugin_def_thread.get_plugin_instance().__dict__['plugin_name']] = [plugin_def_thread]
+                time.sleep(0.001)
+            time.sleep(0.001)
 
         for Plugin_name in self.Plugins: ## Give out the API instance to each plugin and start up each thread.
             Plugin = self.Plugins[Plugin_name][0]
             if('_accept_API' in dir(Plugin.get_plugin_instance())):
                 Plugin.get_plugin_instance()._accept_API(self.Plugin_API)
             Plugin.start()
+            time.sleep(0.001)
 
     def _load_new_plugin(self, name, plugin_location, cust_plugin_name=None):
         Plugin = imp.load_source(name, plugin_location)
@@ -93,6 +96,7 @@ class PluginFramework():
             if(Plugin.__dict__['plugin_name'] == plugin_name):
                 self.Plugins[x] = self._load_new_plugin(plugin_name, Plugin.__dict__['plugin_location'])
             x+=1
+            time.sleep(0.001)
 
     def get_plugins(self):
         return self.Plugins
