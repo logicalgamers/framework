@@ -1,5 +1,7 @@
 from Tkinter import *
 from threading import *
+import random
+import string
 import time
 
 from Pmw import *
@@ -23,6 +25,18 @@ class Default_GUI():
         app = GUI(master=root, API=self.API)
 
         root.mainloop()
+
+class Drop_Down_Item:
+    def __init__(self, PluginThread):
+        self.PT = PluginThread
+        self.ID = self.id_generator()
+        print "INIT"
+
+    def __str__(self):
+        return self.ID
+
+    def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for x in range(size))
 
 class Plugin_Row:
 
@@ -53,33 +67,51 @@ class Plugin_Row:
 
         label = Label(groupFrame, text=self.plugin_instance.__dict__['plugin_name'], justify=LEFT, anchor="w", bg = "#5050b0")
         label.pack(side=LEFT)
-        
-        Init_items = self.get_all_instances()
-        Items = []
-        for item in Init_items:
-            Items.append(str(item))
-            time.sleep(0.001)
 
-        self.drop_down = Pmw.OptionMenu(groupFrame, items=Items)
+        self.drop_down_items = []
+        for item in self.get_all_instances():
+            self.drop_down_items.append(Drop_Down_Item(item))
+
+        self.drop_down = Pmw.OptionMenu(groupFrame, items=self.drop_down_items)
         self.drop_down.pack(side=LEFT)
 
-        self.run = Button(groupFrame, text="Run", command=self.run_new_instance, justify=RIGHT, anchor="e")
-        self.run.pack(side=RIGHT)    
+        self.run = Button(groupFrame, text="Run", command=self.run_new_instance, width=3)
+        self.run.pack(side=LEFT) 
+
+        self.kill_selected = Button(groupFrame, text="Kill", command=self.kill_selected_thread, width=3)
+        self.kill_selected.pack(side=LEFT)  
+
+    def kill_selected_thread(self):
+        selected = self.get_thread_from_DDI_id(self.drop_down.getcurselection())
+        self.remove_thread_from_DDI_id(self.drop_down.getcurselection())
+        selected.PT.stop()
+        self.update_drop_down()
+
+    def remove_thread_from_DDI_id(self, DDI_id):
+        for item in self.drop_down_items:
+            if(item.ID == DDI_id):
+                self.drop_down_items.remove(item)
+            time.sleep(0.001)
+
+    def get_thread_from_DDI_id(self, DDI_id):
+        for item in self.drop_down_items:
+            if(item.ID == DDI_id):
+                return item
+            time.sleep(0.001)
 
     def run_new_instance(self):
         new_instance = self.API.create_new_instance(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name'])
         new_instance.start()
         print "New Instance of " + str(self.plugin_def_thread.get_plugin_instance().__dict__['plugin_name']) + " created.."
+        self.update_drop_down()
 
-        # Update the drop down menu with all instances.
-        Init_items = self.get_all_instances()
-        Items = []
-        for item in Init_items:
-            Items.append(str(item))
-            time.sleep(0.001)
+    def update_drop_down(self):
+        # Update the drop down menu with all instances.        
+        self.drop_down_items = []
+        for item in self.get_all_instances():
+            self.drop_down_items.append(Drop_Down_Item(item))
 
-        print Items
-        self.drop_down.setitems(Items)
+        self.drop_down.setitems(self.drop_down_items)
         self.drop_down.update()
 
     def get_all_instances(self):

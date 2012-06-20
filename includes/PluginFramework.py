@@ -12,10 +12,11 @@ class PluginThread(threading.Thread):
     """docstring for PluginThread"""
 
 
-    def __init__(self, target=None):
+    def __init__(self, target=None,plugin_name=None):
         threading.Thread.__init__(self, target=target)
         self.stop_event = threading.Event()
         self.__target = target
+        self.plugin_name = plugin_name
 
     def run(self):
         self.__target()
@@ -78,7 +79,7 @@ class PluginFramework():
             else:
                 setattr(Plugin_class, "plugin_name", cust_plugin_name)
 
-            Plugin_thread = PluginThread(target=Plugin_class)
+            Plugin_thread = PluginThread(target=Plugin_class, plugin_name = plugin_name)
             return Plugin_thread
         except Exception, ex:
             #if(str(ex) == "'Plugin'"):
